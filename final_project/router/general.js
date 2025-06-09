@@ -6,7 +6,9 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
+  //Extract username and password
+  const user = req.body.username;
+  const pwd = req.body.password
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
@@ -67,14 +69,46 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  //Normalize input title string
+  const inputTitle = req.params.title.replace(/\s+/g, "").toLowerCase();
+
+    // Get all keys of the books object
+    const bookKeys = Object.keys(books);
+
+    const filteredBooks = {};
+    //Iterate through the keys and match author
+    bookKeys.forEach( key => {
+        const book = books[key];
+        const normalizedTitle = book.title.replace(/\s+/g, "").toLowerCase();
+        if (normalizedTitle.includes(inputTitle)){
+            filteredBooks[key] = book;
+        }
+    });
+
+    if (Object.keys(filteredBooks).length > 0) {
+        return res.json(filteredBooks);
+    } else {
+        return res.status(404).json({message: "Book not found"});
+    }
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  //Extract the isbn
+  const isbn = req.params.isbn;
+
+  //Look up the book using ISBN key
+  const book = books[isbn];
+  if (book) {
+    if (!book.reviews) {
+       return res.send(book.reviews); 
+    } else {
+        return res.send(`No reviews are available for ${book.title}. Consider to be the first reviewer.`)
+    }
+    
+  } else {
+    return res.status(404).json({message: "Book not found"});
+  }
 });
 
 module.exports.general = public_users;
