@@ -15,7 +15,7 @@ app.use("/customer/auth/*", function auth(req,res,next){
     if (req.session.authorization){
         let token = req.session.authorization['accessToken'];
 
-        jwt.verify(token, 'access', (err, user)=>{
+        jwt.verify(token, 'my-secret-key', (err, user)=>{
             if (!err){
                 req.user = user;
                 next();

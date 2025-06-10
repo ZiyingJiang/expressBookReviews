@@ -15,6 +15,11 @@ public_users.post("/register", (req,res) => {
     return res.status(400).json({ message: "Username or password not provided" });
   } 
   
+  // Check if the username is valid
+  if (!isValid(username)) {
+    return res.status(400).json({ message: "Username not valid" });
+  }
+  
   // Check if username already exists in the users array
   const userExists = users.some(user => user.username === username);
 
