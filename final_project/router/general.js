@@ -7,9 +7,29 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Extract username and password
-  const user = req.body.username;
-  const pwd = req.body.password
-  return res.status(300).json({message: "Yet to be implemented"});
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // Check if both username and password are provided
+  if (!username || !password){
+    return res.status(400).json({ message: "Username or password not provided" });
+  } 
+  
+  // Check if username already exists in the users array
+  const userExists = users.some(user => user.username === username);
+
+  if (userExists) {
+    return res.status(409).json({ message: "Username already exists" });
+  }
+
+  // Create and store new user
+  const newUser = {
+    username : username,
+    password : password
+  }
+  users.push(newUser);
+  return res.status(201).json({message: `Welcome, ${username}. Please loggin to proceed.`});
+ 
 });
 
 // Get the book list available in the shop
