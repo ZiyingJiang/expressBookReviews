@@ -30,7 +30,8 @@ public_users.post("/register", (req,res) => {
   // Create and store new user
   const newUser = {
     username : username,
-    password : password
+    password : password,
+    review: [] //an array of review by the user
   }
   users.push(newUser);
   return res.status(201).json({message: `Welcome, ${username}. Please loggin to proceed.`});
